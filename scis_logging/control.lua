@@ -54,16 +54,16 @@ end)
 
 commands.add_command('scis_logging.get', 'Returns events since last time', function(command)
 
-	if not command.player_index then
+    if not command.player_index then
         last_tick = command.tick
-		rcon.print(prefix .. game.table_to_json(data))
+        rcon.print(prefix .. game.table_to_json(data))
         data = {}
-	end
+    end
 end)
 
 commands.add_command('scis_logging.clear', 'Clears all saved events', function(command)
-	if not command.player_index then
+    if not command.player_index then
         rcon.print(prefix .. "cleared " .. #data .. " events")
         data = {}
-	end
+    end
 end)
