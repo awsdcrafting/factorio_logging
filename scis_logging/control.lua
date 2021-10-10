@@ -3,22 +3,6 @@ once = require("once")
 local prefix = "[scis-logging]> "
 local data = {}
 local last_tick = 0
-local function dump(e)
-    if type(e) == 'table' then
-        local s = '{ '
-        local b = false
-        for k,v in pairs(e) do
-                if b then s = s .. ', ' end
-                s = s .. '"' .. k .. '"=' .. dump(v)
-                b = true
-        end
-        return s .. '} '
-    else
-        local s = tostring(e)
-        if type(e) ~= 'number' then s = '"'.. s ..'"' end
-        return s
-    end
-end
 
 function init()
     script.on_event(defines.events, function(event)
@@ -64,17 +48,15 @@ end)
 commands.add_command('scis_logging.get', 'Returns events since last time', function(command)
 
 	if not command.player_index then
-		-- This came from the server, probably RCON, so run!
         last_tick = command.tick
 		rcon.print(prefix .. game.table_to_json(data))
         data = {}
 	end
 end)
 
-commands.add_command('scis_logging.clear', 'Clears all saved events "event_queue.clear()"', function(command)
+commands.add_command('scis_logging.clear', 'Clears all saved events', function(command)
 	if not command.player_index then
-		-- This came from the server, probably RCON, so run!
+        rcon.print(prefix .. "cleared " .. #data .. " events")
         data = {}
-        rcon.print(prefix .. "cleared data")
 	end
 end)
