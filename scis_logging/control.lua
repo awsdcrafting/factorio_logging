@@ -17,14 +17,26 @@ function init()
         end
         event.event_id = event.name
         event.event_name = name
-        if settings.global["scis-logging-file"] == true then
+        if settings.global["scis-logging-file"].value then
             local file_name = settings.global["scis-logging-file-name"]
             if file_name == nil or file_name == "" then
                 file_name = "scis_logging.log"
             end
             game.write_file(file_name, prefix ..  game.table_to_json(event).."\n", true, 0)
         end
-        table.insert(data, event)
+        if settings.global["scis-logging-rcon"].value then
+            rcon.print(prefix .. game.table_to_json(event) .. "\n")
+        end
+        if settings.global["scis-logging-rcon-save"].value then 
+            table.insert(data, event)
+        end
+    end)
+    timeout = settings.global["scis-logging-rcon-save-timeout"].value
+    script.on_nth_tick(60*timeout, function() 
+        if last_tick + (60*timeout) <= game.tick then
+            last_tick = game.tick
+            data = {}
+        end
     end)
 end
 
@@ -38,12 +50,7 @@ script.on_init(function()
 end)
 
 --every minute
-script.on_nth_tick(60*60, function() 
-    if last_tick + (60*60) <= game.tick then
-        last_tick = game.tick
-        data = {}
-    end
-end)
+
 
 commands.add_command('scis_logging.get', 'Returns events since last time', function(command)
 
