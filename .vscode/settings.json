@@ -1,0 +1,11 @@
+{
+    "Lua.diagnostics.globals": [
+        "commands",
+        "rcon",
+        "script",
+        "game",
+        "settings",
+        "defines",
+        "data"
+    ]
+}

@@ -1,4 +1,4 @@
-once = require("once")
+local once = require("once")
 
 local prefix = "[scis-logging]> "
 local data = {}
@@ -6,12 +6,12 @@ local last_tick = 0
 
 function init()
     script.on_event(defines.events, function(event)
-        name = once.events[event.name]
+        local name = once.events[event.name]
         if name == nil then
             return
             -- unknown event
         end
-        setting_name = "scis-logging-" .. name
+        local setting_name = "scis-logging-" .. name
         if not settings.global[setting_name].value then
             return
         end
@@ -31,7 +31,7 @@ function init()
             table.insert(data, event)
         end
     end)
-    timeout = settings.global["scis-logging-rcon-save-timeout"].value
+    local timeout = settings.global["scis-logging-rcon-save-timeout"].value
     script.on_nth_tick(60*timeout, function() 
         if last_tick + (60*timeout) <= game.tick then
             last_tick = game.tick
