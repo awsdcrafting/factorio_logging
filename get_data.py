@@ -5,6 +5,7 @@ ip = "127.0.0.1"
 port = 25566
 password = "rconTest"
 
+
 def main():
     client = factorio_rcon.RCONClient(ip, port, password)
     client.connect()
@@ -19,6 +20,7 @@ def main():
         except Exception as ex:
             print(ex)
     return
+
 
 if __name__ == "__main__":
     main()
