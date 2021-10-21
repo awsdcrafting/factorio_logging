@@ -77,5 +77,14 @@ table.insert(settings,
         order = "7"
     }
 )
+table.insert(settings,
+    {
+        type = "bool-setting",
+        name = "scis-logging-ignore-own-commands",
+        setting_type = "runtime-global",
+        default_value = true,
+        order = "8"
+    }
+)
 
 data:extend(settings)

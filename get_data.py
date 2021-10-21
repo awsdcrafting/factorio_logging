@@ -16,9 +16,9 @@ def main():
             print(f"reading")
             resp = client.send_command("/scis_logging.get")
             print(f"{resp}")
-            time.sleep(10)
         except Exception as ex:
             print(ex)
+        time.sleep(10)
     return
 
 
