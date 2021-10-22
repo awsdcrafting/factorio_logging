@@ -8,7 +8,7 @@ local scis_prefix = "[scis-logging]> "
 scis_event_data = {}
 scis_last_tick = 0
 
-local function alarm_check()
+local function alarm_check(tick_data)
     for name, surface in pairs(game.surfaces) do
         local speakers = surface.find_entities_filtered{name = "programmable-speaker"}
         for speaker_id, speaker_entity in pairs(speakers) do
@@ -26,14 +26,14 @@ local function alarm_check()
             speaker.name = "scis_speaker_readout"
             speaker.id = "scis_speaker_readout"
             speaker.event_data = speaker_data
-            if not settings.global["scis-logging-only-active-alarms"].value or (speaker.condition ~= nil and speaker.condition.fullfilled) then
-                table.insert(scis_event_data, speaker)
+            if (not settings.global["scis-logging-only-active-alarms"].value) or (speaker.event_data.condition ~= nil and speaker.condition.fullfilled) then
+                table.insert(scis_event_data, game.table_to_json(speaker))
             end
         end
     end
 end
 
-local function electricity_check()
+local function electricity_check(tick_data)
 --todo
 end
 
@@ -95,7 +95,7 @@ local function init()
     end)
     
     local timeout = settings.global["scis-logging-rcon-save-timeout"].value
-    script.on_nth_tick(60 * timeout, function()
+    script.on_nth_tick(60 * timeout, function(tick_data)
         if scis_last_tick + (60 * timeout) <= game.tick then
             scis_last_tick = game.tick
             scis_event_data = {}
@@ -105,9 +105,9 @@ local function init()
     local alarm_ticks = settings.global["scis-logging-alarm-ticks"].value
     local electricity_ticks = settings.global["scis-logging-electricity-ticks"].value
     if alarm_ticks == electricity_ticks then
-        script.on_nth_tick(alarm_ticks, function()
-            alarm_check()
-            electricity_check()
+        script.on_nth_tick(alarm_ticks, function(tick_data)
+            alarm_check(tick_data)
+            electricity_check(tick_data)
         end)
     else
         script.on_nth_tick(alarm_ticks, alarm_check)
