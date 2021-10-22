@@ -15,7 +15,9 @@ event_fillers["on_ai_command_completed"] = function(event)
 end
 
 event_fillers["on_area_cloned"] = function(event)
-    event["destination_force"] = data_fillers["force"](event["destination_force"])
+    if event["destination_force"] ~= nil then
+        event["destination_force"] = data_fillers["force"](event["destination_force"])
+    end
     event["destination_surface"] = data_fillers["surface"](event["destination_surface"])
     event["source_surface"] = data_fillers["surface"](event["source_surface"])
     return event
@@ -27,21 +29,29 @@ event_fillers["on_biter_base_built"] = function(event)
 end
 
 event_fillers["on_brush_cloned"] = function(event)
-    event["destination_force"] = data_fillers["force"](event["destination_force"])
+    if event["destination_force"] ~= nil then
+        event["destination_force"] = data_fillers["force"](event["destination_force"])
+    end
     event["destination_surface"] = data_fillers["surface"](event["destination_surface"])
     event["source_surface"] = data_fillers["surface"](event["source_surface"])
     return event
 end
 
 event_fillers["on_build_base_arrived"] = function(event)
-    event["group"] = data_fillers["unit_group"](event["group"])
-    event["unit"] = data_fillers["entity"](event["unit"])
+    if event["group"] ~= nil then
+        event["group"] = data_fillers["unit_group"](event["group"])
+    end
+    if event["unit"] ~= nil then
+        event["unit"] = data_fillers["entity"](event["unit"])
+    end
     return event
 end
 
 event_fillers["on_built_entity"] = function(event)
     event["created_entity"] = data_fillers["entity"](event["created_entity"])
-    event["item"] = data_fillers["item_prototype"](event["item"])
+    if event["item"] ~= nil then
+        event["item"] = data_fillers["item_prototype"](event["item"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -136,7 +146,9 @@ event_fillers["on_chunk_generated"] = function(event)
 end
 
 event_fillers["on_combat_robot_expired"] = function(event)
-    event["owner"] = data_fillers["entity"](event["owner"])
+    if event["owner"] ~= nil then
+        event["owner"] = data_fillers["entity"](event["owner"])
+    end
     event["robot"] = data_fillers["entity"](event["robot"])
     return event
 end
@@ -188,10 +200,14 @@ event_fillers["on_entity_cloned"] = function(event)
 end
 
 event_fillers["on_entity_damaged"] = function(event)
-    event["cause"] = data_fillers["entity"](event["cause"])
+    if event["cause"] ~= nil then
+        event["cause"] = data_fillers["entity"](event["cause"])
+    end
     event["damage_type"] = data_fillers["damage_prototype"](event["damage_type"])
     event["entity"] = data_fillers["entity"](event["entity"])
-    event["force"] = data_fillers["force"](event["force"])
+    if event["force"] ~= nil then
+        event["force"] = data_fillers["force"](event["force"])
+    end
     return event
 end
 
@@ -200,10 +216,16 @@ event_fillers["on_entity_destroyed"] = function(event)
 end
 
 event_fillers["on_entity_died"] = function(event)
-    event["cause"] = data_fillers["entity"](event["cause"])
-    event["damage_type"] = data_fillers["damage_prototype"](event["damage_type"])
+    if event["cause"] ~= nil then
+        event["cause"] = data_fillers["entity"](event["cause"])
+    end
+    if event["damage_type"] ~= nil then
+        event["damage_type"] = data_fillers["damage_prototype"](event["damage_type"])
+    end
     event["entity"] = data_fillers["entity"](event["entity"])
-    event["force"] = data_fillers["force"](event["force"])
+    if event["force"] ~= nil then
+        event["force"] = data_fillers["force"](event["force"])
+    end
     event["loot"] = data_fillers["inventory"](event["loot"])
     return event
 end
@@ -313,16 +335,28 @@ event_fillers["on_gui_click"] = function(event)
 end
 
 event_fillers["on_gui_closed"] = function(event)
-    event["element"] = data_fillers["gui_element"](event["element"])
-    event["entity"] = data_fillers["entity"](event["entity"])
-    event["equipment"] = data_fillers["equipment"](event["equipment"])
-    event["item"] = data_fillers["item_stack"](event["item"])
-    event["other_player"] = data_fillers["player"](event["other_player"])
+    if event["element"] ~= nil then
+        event["element"] = data_fillers["gui_element"](event["element"])
+    end
+    if event["entity"] ~= nil then
+        event["entity"] = data_fillers["entity"](event["entity"])
+    end
+    if event["equipment"] ~= nil then
+        event["equipment"] = data_fillers["equipment"](event["equipment"])
+    end
+    if event["item"] ~= nil then
+        event["item"] = data_fillers["item_stack"](event["item"])
+    end
+    if event["other_player"] ~= nil then
+        event["other_player"] = data_fillers["player"](event["other_player"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
     end
-    event["technology"] = data_fillers["technology"](event["technology"])
+    if event["technology"] ~= nil then
+        event["technology"] = data_fillers["technology"](event["technology"])
+    end
     return event
 end
 
@@ -354,11 +388,21 @@ event_fillers["on_gui_location_changed"] = function(event)
 end
 
 event_fillers["on_gui_opened"] = function(event)
-    event["element"] = data_fillers["gui_element"](event["element"])
-    event["entity"] = data_fillers["entity"](event["entity"])
-    event["equipment"] = data_fillers["equipment"](event["equipment"])
-    event["item"] = data_fillers["item_stack"](event["item"])
-    event["other_player"] = data_fillers["player"](event["other_player"])
+    if event["element"] ~= nil then
+        event["element"] = data_fillers["gui_element"](event["element"])
+    end
+    if event["entity"] ~= nil then
+        event["entity"] = data_fillers["entity"](event["entity"])
+    end
+    if event["equipment"] ~= nil then
+        event["equipment"] = data_fillers["equipment"](event["equipment"])
+    end
+    if event["item"] ~= nil then
+        event["item"] = data_fillers["item_stack"](event["item"])
+    end
+    if event["other_player"] ~= nil then
+        event["other_player"] = data_fillers["player"](event["other_player"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -543,12 +587,16 @@ event_fillers["on_player_banned"] = function(event)
 end
 
 event_fillers["on_player_built_tile"] = function(event)
-    event["item"] = data_fillers["item_prototype"](event["item"])
+    if event["item"] ~= nil then
+        event["item"] = data_fillers["item_prototype"](event["item"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
     end
-    event["stack"] = data_fillers["item_stack"](event["stack"])
+    if event["stack"] ~= nil then
+        event["stack"] = data_fillers["item_stack"](event["stack"])
+    end
     local surface = game.get_surface(event["surface_index"])
     if surface ~= nil then
         event["surface"] = data_fillers["surface"](surface)
@@ -681,7 +729,9 @@ event_fillers["on_player_demoted"] = function(event)
 end
 
 event_fillers["on_player_died"] = function(event)
-    event["cause"] = data_fillers["entity"](event["cause"])
+    if event["cause"] ~= nil then
+        event["cause"] = data_fillers["entity"](event["cause"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -706,7 +756,9 @@ event_fillers["on_player_display_scale_changed"] = function(event)
 end
 
 event_fillers["on_player_driving_changed_state"] = function(event)
-    event["entity"] = data_fillers["entity"](event["entity"])
+    if event["entity"] ~= nil then
+        event["entity"] = data_fillers["entity"](event["entity"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -877,7 +929,9 @@ event_fillers["on_player_respawned"] = function(event)
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
     end
-    event["player_port"] = data_fillers["entity"](event["player_port"])
+    if event["player_port"] ~= nil then
+        event["player_port"] = data_fillers["entity"](event["player_port"])
+    end
     return event
 end
 
@@ -977,9 +1031,15 @@ event_fillers["on_player_used_spider_remote"] = function(event)
 end
 
 event_fillers["on_post_entity_died"] = function(event)
-    event["damage_type"] = data_fillers["damage_prototype"](event["damage_type"])
-    event["force"] = data_fillers["force"](event["force"])
-    event["ghost"] = data_fillers["entity"](event["ghost"])
+    if event["damage_type"] ~= nil then
+        event["damage_type"] = data_fillers["damage_prototype"](event["damage_type"])
+    end
+    if event["force"] ~= nil then
+        event["force"] = data_fillers["force"](event["force"])
+    end
+    if event["ghost"] ~= nil then
+        event["ghost"] = data_fillers["entity"](event["ghost"])
+    end
     event["prototype"] = data_fillers["entity_prototype"](event["prototype"])
     local surface = game.get_surface(event["surface_index"])
     if surface ~= nil then
@@ -1053,7 +1113,9 @@ event_fillers["on_pre_player_crafted_item"] = function(event)
 end
 
 event_fillers["on_pre_player_died"] = function(event)
-    event["cause"] = data_fillers["entity"](event["cause"])
+    if event["cause"] ~= nil then
+        event["cause"] = data_fillers["entity"](event["cause"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -1139,7 +1201,9 @@ event_fillers["on_research_reversed"] = function(event)
 end
 
 event_fillers["on_research_started"] = function(event)
-    event["last_research"] = data_fillers["technology"](event["last_research"])
+    if event["last_research"] ~= nil then
+        event["last_research"] = data_fillers["technology"](event["last_research"])
+    end
     event["research"] = data_fillers["technology"](event["research"])
     return event
 end
@@ -1221,7 +1285,9 @@ event_fillers["on_rocket_launched"] = function(event)
         end
     end
     event["rocket"] = data_fillers["entity"](event["rocket"])
-    event["rocket_silo"] = data_fillers["entity"](event["rocket_silo"])
+    if event["rocket_silo"] ~= nil then
+        event["rocket_silo"] = data_fillers["entity"](event["rocket_silo"])
+    end
     return event
 end
 
@@ -1252,12 +1318,16 @@ event_fillers["on_script_path_request_finished"] = function(event)
 end
 
 event_fillers["on_script_trigger_effect"] = function(event)
-    event["source_entity"] = data_fillers["entity"](event["source_entity"])
+    if event["source_entity"] ~= nil then
+        event["source_entity"] = data_fillers["entity"](event["source_entity"])
+    end
     local surface = game.get_surface(event["surface_index"])
     if surface ~= nil then
         event["surface"] = data_fillers["surface"](surface)
     end
-    event["target_entity"] = data_fillers["entity"](event["target_entity"])
+    if event["target_entity"] ~= nil then
+        event["target_entity"] = data_fillers["entity"](event["target_entity"])
+    end
     return event
 end
 
@@ -1267,7 +1337,9 @@ event_fillers["on_sector_scanned"] = function(event)
 end
 
 event_fillers["on_selected_entity_changed"] = function(event)
-    event["last_entity"] = data_fillers["entity"](event["last_entity"])
+    if event["last_entity"] ~= nil then
+        event["last_entity"] = data_fillers["entity"](event["last_entity"])
+    end
     local player = game.get_player(event["player_index"])
     if player ~= nil then
         event["player"] = data_fillers["player"](player)
@@ -1360,13 +1432,17 @@ end
 
 event_fillers["on_trigger_created_entity"] = function(event)
     event["entity"] = data_fillers["entity"](event["entity"])
-    event["source"] = data_fillers["entity"](event["source"])
+    if event["source"] ~= nil then
+        event["source"] = data_fillers["entity"](event["source"])
+    end
     return event
 end
 
 event_fillers["on_trigger_fired_artillery"] = function(event)
     event["entity"] = data_fillers["entity"](event["entity"])
-    event["source"] = data_fillers["entity"](event["source"])
+    if event["source"] ~= nil then
+        event["source"] = data_fillers["entity"](event["source"])
+    end
     return event
 end
 

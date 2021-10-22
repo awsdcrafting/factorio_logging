@@ -168,7 +168,7 @@ def write_event_filler(event_fillers, data_filler_names):
             for event_data in event_filler["data"]:
                 wrapcount = 0
                 to_write = []
-                prefix = f'{" " * (4 + wrapcount * 4)}event["{event_data["name"]}"] = '
+                prefix = f'event["{event_data["name"]}"] = '
                 if is_basic(event_data["type"]):
                     if event_data["name"].endswith("_index") and event_data["name"][:-6] in data_filler_names:
                         name = event_data["name"][:-6]
@@ -178,7 +178,7 @@ def write_event_filler(event_fillers, data_filler_names):
                         to_write += [f'end\n']
                     pass
                 elif type(event_data["type"]) == str and camel_to_snake(event_data["type"]) in data_filler_names:
-                    event_filler_file.write(f'{prefix}data_fillers["{camel_to_snake(event_data["type"])}"](event["{event_data["name"]}"])\n')
+                    to_write += [f'{prefix}data_fillers["{camel_to_snake(event_data["type"])}"](event["{event_data["name"]}"])\n']
                 else:
                     print(f'{event_filler["name"]}: {event_data}')
                 if event_data["optional"] and to_write:
