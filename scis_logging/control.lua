@@ -54,9 +54,9 @@ local function init()
         if not settings.global[setting_name].value then
             return
         end
-
+        
         local event_data = {}
-
+        
         event_data.id = event.name
         event_data.name = name
         
@@ -66,7 +66,7 @@ local function init()
                 return
             end
         end
-
+        
         if event_fillers[name] ~= nil then
             event_data.event_data = event_fillers[name](event)
         end
@@ -90,10 +90,10 @@ local function init()
             rcon.print(scis_prefix .. game.table_to_json(event_data) .. "\n")
         end
         if settings.global["scis-logging-rcon-save"].value then
-            table.insert(scis_event_data, event_data)
+            table.insert(scis_event_data, game.table_to_json(event_data))
         end
     end)
-
+    
     local timeout = settings.global["scis-logging-rcon-save-timeout"].value
     script.on_nth_tick(60 * timeout, function()
         if scis_last_tick + (60 * timeout) <= game.tick then
@@ -125,12 +125,16 @@ script.on_init(function()
     init()
 end)
 
+local function array_to_json(array)
+    return "[" .. table.concat(array, ",") .. "]"
+end
+
 --every minute
 commands.add_command('scis_logging.get', 'Returns events since last time', function(command)
         
         if not command.player_index then
             scis_last_tick = command.tick
-            rcon.print(scis_prefix .. game.table_to_json(scis_event_data))
+            rcon.print(scis_prefix .. array_to_json(scis_event_data))
             scis_event_data = {}
         end
 end)

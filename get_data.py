@@ -18,7 +18,7 @@ def main():
             print(f"{resp}")
         except Exception as ex:
             print(ex)
-        time.sleep(10)
+        time.sleep(1)
     return
 
 
