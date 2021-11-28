@@ -8,7 +8,7 @@ table.insert(settings,
         name = "scis-logging-file",
         setting_type = "runtime-global",
         default_value = false,
-        order = "0"
+        order = "01"
     }
 )
 table.insert(settings,
@@ -17,16 +17,7 @@ table.insert(settings,
         name = "scis-logging-file-name",
         setting_type = "runtime-global",
         default_value = "scis_logging.log",
-        order = "1"
-    }
-)
-table.insert(settings,
-    {
-        type = "bool-setting",
-        name = "scis-logging-rcon",
-        setting_type = "runtime-global",
-        default_value = false,
-        order = "2"
+        order = "11"
     }
 )
 table.insert(settings,
@@ -35,7 +26,7 @@ table.insert(settings,
         name = "scis-logging-rcon-save",
         setting_type = "runtime-global",
         default_value = true,
-        order = "3"
+        order = "21"
     }
 )
 table.insert(settings,
@@ -45,7 +36,7 @@ table.insert(settings,
         setting_type = "runtime-global",
         default_value = 60,
         min = 1,
-        order = "4"
+        order = "22"
     }
 )
 table.insert(settings,
@@ -55,7 +46,7 @@ table.insert(settings,
         setting_type = "runtime-global",
         default_value = 60,
         min = 1,
-        order = "5"
+        order = "41"
     }
 )
 table.insert(settings,
@@ -64,7 +55,7 @@ table.insert(settings,
         name = "scis-logging-only-active-alarms",
         setting_type = "runtime-global",
         default_value = true,
-        order = "6"
+        order = "42"
     }
 )
 table.insert(settings,
@@ -74,7 +65,7 @@ table.insert(settings,
         setting_type = "runtime-global",
         default_value = 60,
         min = 1,
-        order = "7"
+        order = "51"
     }
 )
 table.insert(settings,
@@ -83,7 +74,7 @@ table.insert(settings,
         name = "scis-logging-ignore-own-commands",
         setting_type = "runtime-global",
         default_value = true,
-        order = "8"
+        order = "52"
     }
 )
 

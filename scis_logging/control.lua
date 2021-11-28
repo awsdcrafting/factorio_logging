@@ -2,13 +2,16 @@ local once = require("once")
 local pre_hooks = require("pre_hooks")
 local prefill_hooks = require("prefill_hooks")
 local post_hooks = require("post_hooks")
-event_fillers = require("event_filler")
+local event_fillers = require("event_filler")
+local log = require("log")
+local tick_handler = require("tick_handler")
 
 local scis_prefix = "[scis-logging]> "
-scis_event_data = {}
-scis_last_tick = 0
+local init
 
 local function alarm_check(tick_data)
+    --cache settings
+    local invValue = not settings.global["scis-logging-only-active-alarms"].value
     for name, surface in pairs(game.surfaces) do
         local speakers = surface.find_entities_filtered{name = "programmable-speaker"}
         for speaker_id, speaker_entity in pairs(speakers) do
@@ -26,8 +29,9 @@ local function alarm_check(tick_data)
             speaker.name = "scis_speaker_readout"
             speaker.id = "scis_speaker_readout"
             speaker.event_data = speaker_data
-            if (not settings.global["scis-logging-only-active-alarms"].value) or (speaker.event_data.condition ~= nil and speaker.condition.fullfilled) then
-                table.insert(scis_event_data, game.table_to_json(speaker))
+
+            if invValue or (speaker.event_data.condition ~= nil and speaker.event_data.condition.fulfilled) then
+                log.log(game.table_to_json(speaker))
             end
         end
     end
@@ -37,83 +41,80 @@ local function electricity_check(tick_data)
 --todo
 end
 
-local function init()
-    script.on_event(defines.events, function(event)
-        local name = once.events[event.name]
-        if name == nil then
-            return
-        -- unknown event
-        end
-        if pre_hooks[name] ~= nil then
-            local ret = pre_hooks[name](event)
-            if not ret then
-                return
-            end
-        end
-        local setting_name = "scis-logging-" .. name
-        if not settings.global[setting_name].value then
+local function handle_event(event)
+    local name = once.events[event.name]
+    if name == nil then
+        return
+    -- unknown event
+    end
+    if pre_hooks[name] ~= nil then
+        local ret = pre_hooks[name](event)
+        if not ret then
             return
         end
-        
-        local event_data = {}
-        
-        event_data.id = event.name
-        event_data.name = name
-        
-        if prefill_hooks[name] ~= nil then
-            local ret = prefill_hooks[name](event)
-            if not ret then
-                return
-            end
-        end
-        
-        if event_fillers[name] ~= nil then
-            event_data.event_data = event_fillers[name](event)
-        end
-        
-        
-        if post_hooks[name] ~= nil then
-            local ret = post_hooks[name](event_data)
-            if not ret then
-                return
-            end
-        end
-        
-        if settings.global["scis-logging-file"].value then
-            local file_name = settings.global["scis-logging-file-name"].value
-            if file_name == nil or file_name == "" then
-                file_name = "scis_logging.log"
-            end
-            game.write_file(file_name, scis_prefix .. game.table_to_json(event_data) .. "\n", true, 0)
-        end
-        if settings.global["scis-logging-rcon"].value then
-            rcon.print(scis_prefix .. game.table_to_json(event_data) .. "\n")
-        end
-        if settings.global["scis-logging-rcon-save"].value then
-            table.insert(scis_event_data, game.table_to_json(event_data))
-        end
-    end)
+    end
     
-    local timeout = settings.global["scis-logging-rcon-save-timeout"].value
-    script.on_nth_tick(60 * timeout, function(tick_data)
-        if scis_last_tick + (60 * timeout) <= game.tick then
-            scis_last_tick = game.tick
-            scis_event_data = {}
-        end
-    end)
     
-    local alarm_ticks = settings.global["scis-logging-alarm-ticks"].value
-    local electricity_ticks = settings.global["scis-logging-electricity-ticks"].value
-    if alarm_ticks == electricity_ticks then
-        script.on_nth_tick(alarm_ticks, function(tick_data)
-            alarm_check(tick_data)
-            electricity_check(tick_data)
-        end)
-    else
-        script.on_nth_tick(alarm_ticks, alarm_check)
-        script.on_nth_tick(electricity_ticks, electricity_check)
+    local event_data = {}
+    
+    event_data.id = event.name
+    event_data.name = name
+
+    if name == "on_runtime_mod_setting_changed" then
+        if tostring(event.setting):find('^scis%-logging%-') ~= nil then
+            init()
+            --if my settings are changed redo all inits
+        end
+    end
+    
+    if prefill_hooks[name] ~= nil then
+        local ret = prefill_hooks[name](event)
+        if not ret then
+            return
+        end
+    end
+    
+    if event_fillers[name] ~= nil then
+        event_data.event_data = event_fillers[name](event)
+    end
+    
+    
+    if post_hooks[name] ~= nil then
+        local ret = post_hooks[name](event_data)
+        if not ret then
+            return
+        end
+    end
+    
+
+    log.log(game.table_to_json(event_data))
+end
+
+init = function()
+    print(scis_prefix .. "mod init")
+    local global_settings = settings.global
+    local events = {}
+    for event_id, event_name in pairs(once.events) do
+        local setting_name = "scis-logging-" .. event_name
+        if global_settings[setting_name].value then
+            table.insert(events, event_id)
+        end
     end
 
+    script.on_event(events, handle_event)
+
+    
+    local alarm_ticks = global_settings["scis-logging-alarm-ticks"].value
+    tick_handler.add_function(alarm_ticks, alarm_check)
+    local electricity_ticks = global_settings["scis-logging-electricity-ticks"].value
+    tick_handler.add_function(electricity_ticks, electricity_check)
+        
+    local timeout = global_settings["scis-logging-rcon-save-timeout"].value
+    tick_handler.add_function(60 * timeout, function(tick_data)
+        log.clear_data(false)
+    end)
+
+    log.init()
 end
 
 script.on_load(function()
@@ -125,24 +126,22 @@ script.on_init(function()
     init()
 end)
 
+
 local function array_to_json(array)
     return "[" .. table.concat(array, ",") .. "]"
 end
 
 --every minute
 commands.add_command('scis_logging.get', 'Returns events since last time', function(command)
-        
-        if not command.player_index then
-            scis_last_tick = command.tick
-            rcon.print(scis_prefix .. array_to_json(scis_event_data))
-            scis_event_data = {}
-        end
+    if not command.player_index then
+        rcon.print(scis_prefix .. array_to_json(log.get_rcon_data()))
+        log.clear_data(true)
+    end
 end)
 
 commands.add_command('scis_logging.clear', 'Clears all saved events', function(command)
     if not command.player_index then
-        rcon.print(scis_prefix .. "cleared " .. #scis_event_data .. " events")
-        scis_event_data = {}
+        log.clear_data(true)
     end
 end)
 
