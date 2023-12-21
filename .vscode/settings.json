@@ -7,5 +7,9 @@
         "settings",
         "defines",
         "data"
+    ],
+    "Lua.workspace.library": [],
+    "Lua.workspace.userThirdParty": [
+        "/home/michael/.config/VSCodium/User/workspaceStorage/cc5a0cd459e2d204e54ea598f6791ea9/justarandomgeek.factoriomod-debug/sumneko-3rd"
     ]
 }
