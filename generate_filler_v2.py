@@ -184,7 +184,7 @@ def write_event_filler(event_fillers, data_filler_names):
                 elif type(event_data["type"]) == str and camel_to_snake(event_data["type"]) in data_filler_names:
                     to_write += [f'{prefix}data_fillers["{camel_to_snake(event_data["type"])}"](event["{event_data["name"]}"])\n']
                 else:
-                    print(f'{event_filler["name"]}: {event_data}')
+                    print(f'unknown event_data: {event_filler["name"]}: {event_data}')
                 if event_data["optional"] and to_write:
                     event_filler_file.write(f'{" " * (4 + wrapcount * 4)}if event["{event_data["name"]}"] ~= nil then\n')
                     wrapcount += 1
