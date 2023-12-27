@@ -5,11 +5,13 @@ import re
 import os
 import urllib.request
 
+import pprint
+
 # file location of latest factorio api in json format as can be found here: https://lua-api.factorio.com/latest/runtime-api.json
 factorio_api_file_location = "./factorio-api.json"
-data_filler_location = "./scis_logging/data_filler.lua"
+data_filler_location = "./data_filler.lua"
 relative_data_filler_location = "data_filler"
-possible_data_fillers = "./data_fillers.lua"
+possible_data_fillers = "./full_data_fillers.lua"
 event_filler_location = "./scis_logging/event_filler.lua"
 
 pattern = re.compile(r'(?<!^)(?=[A-Z])')
@@ -23,20 +25,27 @@ def parse_builtin(api):
     global builtin
     for builtin_type in api["builtin_types"]:
         builtin += [builtin_type["name"]]
-    # print(builtin)
+    print("builtin")
+    pprint.pprint(builtin)
+    print()
 
 
 def parse_concepts(api):
     global concepts
     for concept in api["concepts"]:
         concepts += [concept["name"]]
-    # print(concepts)
+    print("concepts")
+    pprint.pprint(concepts)
+    print()
 
 
 def parse_defines(api):
     global defines
     for define in api["defines"]:
         defines += [f'defines.{define["name"]}']
+    print("defines")
+    pprint.pprint(defines)
+    print()
 
 
 def camel_to_snake(string):
@@ -184,7 +193,7 @@ def write_event_filler(event_fillers, data_filler_names):
                 elif type(event_data["type"]) == str and camel_to_snake(event_data["type"]) in data_filler_names:
                     to_write += [f'{prefix}data_fillers["{camel_to_snake(event_data["type"])}"](event["{event_data["name"]}"])\n']
                 else:
-                    print(f'unknown event_data: {event_filler["name"]}: {event_data}')
+                    print(f'unknown event_data:{event_filler["name"]}: {event_data}')
                 if event_data["optional"] and to_write:
                     event_filler_file.write(f'{" " * (4 + wrapcount * 4)}if event["{event_data["name"]}"] ~= nil then\n')
                     wrapcount += 1
@@ -219,7 +228,7 @@ def main():
         data_filler_names = [x["name"] for x in data_fillers]
         write_event_filler(event_fillers, data_filler_names)
 
-        # write_data_filler(data_fillers)
+        write_data_filler(data_fillers)
 
 
 if __name__ == "__main__":
